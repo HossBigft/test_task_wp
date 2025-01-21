@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "pandas>=2.2.3",
+    "psycopg>=3.2.4",
     "pydantic>=2.10.5",
     "pydantic-settings>=2.7.1",
     "sqlalchemy>=2.0.37",
