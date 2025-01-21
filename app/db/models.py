@@ -6,15 +6,16 @@ Base = declarative_base()
 class Movie(Base):
     __tablename__ = "movies"
 
-    show_id = Column(Integer, primary_key=True)  
+    show_id = Column(Text, primary_key=True)  
     type = Column(String(50))  
     title = Column(String(200))  
-    director = Column(String(200))  
+    director = Column(Text)  
     cast = Column(Text)  
-    country = Column(String(200))  
+    country = Column(Text)  
     date_added = Column(Date)  
     release_year = Column(Integer) 
     rating = Column(String(10))  
     duration = Column(String(20))  
-    listed_in = Column(String(200))  
+    listed_in = Column(Text)  
     description = Column(Text)
+
