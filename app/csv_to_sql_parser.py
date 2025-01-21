@@ -7,7 +7,7 @@ def split_column_data(df, column_name):
 
 
 if __name__ == "__main__":
-    df = pd.read_csv("netflix.csv")
+    df = pd.read_csv("./data/netflix.csv")
     df["date_added"] = pd.to_datetime(df["date_added"], errors="coerce")
     df["release_year"] = pd.to_datetime(df["date_added"], errors="coerce")
     df = split_column_data(df, "cast")
