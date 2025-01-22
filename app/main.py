@@ -32,7 +32,3 @@ def login():
     access_token = create_access_token(identity=user.id)
     return jsonify({"message": "Login Success", "access_token": access_token}), 200
 
-
-if __name__ == "__main__":
-    with app.app_context():
-        app.run(debug=True, host="0.0.0.0", port=8000)
