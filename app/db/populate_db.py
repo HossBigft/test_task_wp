@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 from app.config import settings
-from app.db.models import Base, Movie
+from app.db.models import Base, Show
 from app.db.crud import create_user
 
 
@@ -34,7 +34,7 @@ def populate_db() -> None:
 
     for _, row in df.iterrows():
         try:
-            movie = Movie(
+            movie = Show(
                 show_id=row["show_id"],
                 type=row["type"],
                 title=row["title"],

@@ -6,8 +6,8 @@ from sqlalchemy.dialects.postgresql import UUID
 Base = declarative_base()
 
 
-class Movie(Base):
-    __tablename__ = "movies"
+class Show(Base):
+    __tablename__ = "shows"
 
     show_id = Column(Text, primary_key=True)
     type = Column(String(50))
