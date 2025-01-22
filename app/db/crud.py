@@ -1,8 +1,9 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, scoped_session
 from flask_bcrypt import Bcrypt
-from app.main import app
+from typing import Dict, Any
 
-from app.db.models import User
+from app.main import app
+from app.db.models import User, Show
 
 
 bcrypt = Bcrypt(app)
@@ -19,7 +20,7 @@ def authenticate(*, session: Session, username: str, password: str) -> User | No
     return None
 
 
-def create_user(*, session: Session, username: str, password: str) -> User:
+def create_user(*, session: scoped_session, username: str, password: str) -> User:
     db_obj = User(
         username=username,
         hashed_password=bcrypt.generate_password_hash(password).decode("utf-8"),
@@ -28,3 +29,24 @@ def create_user(*, session: Session, username: str, password: str) -> User:
     session.commit()
     session.refresh(db_obj)
     return db_obj
+
+
+def search_movies(
+    *, session: Session, filters: Dict[str, Any], limit: int = 10, offset: int = 0
+):
+    query = session.query(Show).filter(Show.type == "Movie")
+    for field, value in filters.items():
+        model_field = getattr(Show, field)
+        if isinstance(value, str) and field in [
+            "title",
+            "description",
+            "cast",
+            "director",
+            "country",
+            "listed_in",
+        ]:
+            query = query.filter(model_field.ilike(f"%{value}%"))
+        else:
+            query = query.filter(model_field == value)
+
+    return query.offset(offset).limit(limit).all()
