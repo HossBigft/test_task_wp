@@ -75,3 +75,8 @@ def get_movies():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/health-check", methods=["GET"])
+def health_check():
+    return jsonify(True)
