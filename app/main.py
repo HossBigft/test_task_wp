@@ -55,19 +55,22 @@ def get_movies():
             session=db.session, filters=filter, limit=limit, offset=offset
         )
         if not movies:
-            return jsonify("No result"),404
+            return jsonify("No result"), 404
         return jsonify(
             [
                 {
                     "show_id": m.show_id,
+                    "type": m.type,
                     "title": m.title,
                     "director": m.director,
                     "cast": m.cast,
+                    "date_added": m.date_added.strftime("%Y-%m-%d"),
                     "release_year": m.release_year,
                     "rating": m.rating,
                     "duration": m.duration,
                     "description": m.description,
                     "country": m.country,
+                    "listed_in": m.listed_in,
                 }
                 for m in movies
             ]

@@ -8,17 +8,26 @@ from pydantic import (
 
 from typing_extensions import Annotated
 from typing import List
+from enum import Enum
+from datetime import datetime
+
+
+class ShowTypes(Enum):
+    MOVIE = "Movie"
+    TVSHOW = "TV Show"
 
 
 constr_str = Annotated[str | None, StringConstraints(min_length=3, max_length=50)]
 
 
 class ShowSearchFilter(BaseModel):
+    type: ShowTypes | None = Field(None)
     title: constr_str = None
     director: List[constr_str] | None = Field(None, min_length=1, max_length=10)
     rating: Annotated[str | None, StringConstraints(min_length=1, max_length=10)] = None
     cast: List[constr_str] | None = Field(None, min_length=1, max_length=10)
     country: List[constr_str] | None = Field(None, min_length=1, max_length=10)
+    date_added: datetime | None = None
     release_year: int | None = Field(None, ge=1900, le=2025)
     duration: Annotated[str | None, StringConstraints(min_length=3, max_length=10)] = (
         None
@@ -38,6 +47,7 @@ class ShowSearchFilter(BaseModel):
             "duration",
             "listed_in",
             "description",
+            "date_added",
         ]
 
         if not any(values.get(field) for field in search_fields):
