@@ -15,10 +15,10 @@ constr_str = Annotated[str | None, StringConstraints(min_length=3, max_length=50
 
 class ShowSearchFilter(BaseModel):
     title: constr_str = None
-    director: List[constr_str] | None = Field(None, min_length=3, max_length=10)
+    director: List[constr_str] | None = Field(None, min_length=1, max_length=10)
     rating: Annotated[str | None, StringConstraints(min_length=1, max_length=10)] = None
-    cast: List[constr_str] | None = Field(None, min_length=3, max_length=10)
-    country: List[constr_str] | None = Field(None, min_length=4, max_length=10)
+    cast: List[constr_str] | None = Field(None, min_length=1, max_length=10)
+    country: List[constr_str] | None = Field(None, min_length=1, max_length=10)
     release_year: int | None = Field(None, ge=1900, le=2025)
     duration: Annotated[str | None, StringConstraints(min_length=3, max_length=10)] = (
         None
