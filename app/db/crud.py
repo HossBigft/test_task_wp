@@ -46,16 +46,20 @@ def search_movies(
     }
 
     column_search_actions: Dict[str, str] = {
+        "type": "exact_text",
         "title": "search_text",
-        "description": "search_text",
-        "cast": "search_text_array",
         "director": "search_text_array",
-        "country": "search_text_array",
-        "listed_in": "search_text_array",
         "rating": "exact_text",
+        "cast": "search_text_array",
+        "country": "search_text_array",
+        "date_added": "exact",
+        "release_year": "exact",
+        "duration": "exact",
+        "listed_in": "search_text_array",
+        "description": "search_text",
     }
 
-    query = session.query(Show).filter(Show.type == "Movie")
+    query = session.query(Show)
 
     for field, value in filters.items():
         model_field = getattr(Show, field)
