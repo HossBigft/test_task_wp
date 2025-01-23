@@ -38,9 +38,7 @@ def search_movies(
 ):
     search_querys: Dict[str, Callable] = {
         "exact": lambda field, value: field == value,
-        "search_text": lambda field, value: or_(
-            *[field.ilike(f"%{v}%") for v in value]
-        ),
+        "search_text": lambda field, value: field.ilike(f"%{value}%"),
         "search_text_array": lambda field, value: or_(
             *[func.array_to_string(field, ",").ilike(f"{v}%") for v in value]
         ),
@@ -60,10 +58,8 @@ def search_movies(
     query = session.query(Show).filter(Show.type == "Movie")
 
     for field, value in filters.items():
-        print(field, value)
         model_field = getattr(Show, field)
         column_search_action = column_search_actions.get(field, "exact")
-        print(column_search_action)
         action = search_querys[column_search_action]
         query = query.filter(action(model_field, value))
 
