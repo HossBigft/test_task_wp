@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token
 from app.config import settings
-from app.models import ShowSearchInput
+from app.models import ShowSearchInput, LogInput
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = str(settings.SQLALCHEMY_DATABASE_URI)
@@ -18,18 +18,24 @@ jwt = JWTManager(app)
 def login():
     from app.db.crud import authenticate
 
-    data = request.get_json()
-    username = data["username"]
-    password = data["password"]
-    print("Received data:", username, password)
+    try:
+        login_data = LogInput.model_validate(request.get_json())
 
-    user = authenticate(session=db.session, username=username, password=password)
-    if not user:
-        return jsonify({"message": "Incorrect email or password"}), 400
-    elif not user.is_active:
-        return jsonify({"message": "Inactive user"}), 400
-    access_token = create_access_token(identity=user.id)
-    return jsonify({"message": "Login Success", "access_token": access_token}), 200
+        user = authenticate(
+            session=db.session,
+            username=login_data.username,
+            password=login_data.password,
+        )
+        if not user:
+            return jsonify({"message": "Incorrect email or password"}), 400
+        elif not user.is_active:
+            return jsonify({"message": "Inactive user"}), 400
+        access_token = create_access_token(identity=user.id)
+        return jsonify({"message": "Login Success", "access_token": access_token}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 422
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/movies", methods=["POST"])

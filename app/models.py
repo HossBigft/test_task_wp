@@ -58,3 +58,8 @@ class ShowSearchFilter(BaseModel):
 class ShowSearchInput(ShowSearchFilter):
     limit: int = Field(10, gt=0, le=10)
     offset: int = 0
+
+
+class LogInput(BaseModel):
+    username: Annotated[str, StringConstraints(min_length=1, max_length=20)]
+    password: Annotated[str, StringConstraints(min_length=1, max_length=50)]
