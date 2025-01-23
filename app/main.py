@@ -72,7 +72,8 @@ def get_movies():
                 for m in movies
             ]
         )
-
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 422
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
