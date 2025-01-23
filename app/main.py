@@ -1,9 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token
-
 from app.config import settings
-
+from app.models import ShowSearchInput
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = str(settings.SQLALCHEMY_DATABASE_URI)
@@ -33,29 +32,18 @@ def login():
     return jsonify({"message": "Login Success", "access_token": access_token}), 200
 
 
-@app.route("/movies", methods=["GET"])
+@app.route("/movies", methods=["POST"])
 def get_movies():
     from app.db.crud import search_movies
 
     try:
-        title = request.args.get("title")
-        director = request.args.get("director")
-        release_year = request.args.get("release_year")
-        rating = request.args.get("rating")
-        limit = int(request.args.get("limit", 10))
-        offset = int(request.args.get("offset", 0))
-
-        filters = {}
-        if title:
-            filters["title"] = title
-        if director:
-            filters["director"] = director
-        if release_year:
-            filters["release_year"] = int(release_year)
-        if rating:
-            filters["rating"] = rating
+        input = ShowSearchInput.model_validate(request.get_json())
+        filter = input.model_dump(exclude_none=True, exclude={"offset", "limit"})
+        print(filter)
+        limit = input.limit
+        offset = input.offset
         movies = search_movies(
-            session=db.session, filters=filters, limit=limit, offset=offset
+            session=db.session, filters=filter, limit=limit, offset=offset
         )
         return jsonify(
             [
@@ -68,6 +56,7 @@ def get_movies():
                     "rating": m.rating,
                     "duration": m.duration,
                     "description": m.description,
+                    "country": m.country,
                 }
                 for m in movies
             ]
