@@ -54,7 +54,7 @@ def search_shows(
         "country": "search_text_array",
         "date_added": "exact",
         "release_year": "exact",
-        "duration": "exact",
+        "duration": "search_text",
         "listed_in": "search_text_array",
         "description": "search_text",
     }

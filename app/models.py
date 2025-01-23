@@ -32,7 +32,7 @@ class ShowSearchFilter(BaseModel):
     country: List[constr_str] | None = Field(None, min_length=1, max_length=10)
     date_added: datetime | None = None
     release_year: int | None = Field(None, ge=1900, le=2025)
-    duration: Annotated[str | None, StringConstraints(min_length=3, max_length=10)] = (
+    duration: Annotated[str | None, StringConstraints(min_length=1, max_length=10)] = (
         None
     )
     listed_in: List[constr_str] | None = Field(None, min_length=1, max_length=10)
