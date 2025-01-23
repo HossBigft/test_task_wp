@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 
 from app.config import settings
-from app.models import ShowSearchInput, LogInput
+from app.models import ShowSearchInput, User
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = str(settings.SQLALCHEMY_DATABASE_URI)
@@ -22,7 +22,7 @@ def login():
     from app.db.crud import authenticate
 
     try:
-        login_data = LogInput.model_validate(request.get_json())
+        login_data = User.model_validate(request.get_json())
 
         user = authenticate(
             session=db.session,
@@ -84,3 +84,22 @@ def get_movies():
 @app.route("/health-check", methods=["GET"])
 def health_check():
     return jsonify(True)
+
+
+@app.route("/signup", methods=["POST"])
+@jwt_required()
+def signup():
+    from app.db.crud import create_user
+
+    try:
+        signup_data = User.model_validate(request.get_json())
+        create_user(
+            session=db.session,
+            username=signup_data.username,
+            password=signup_data.password,
+        )
+        return jsonify({"message": "Sign up Success"}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 422
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
