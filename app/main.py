@@ -41,16 +41,16 @@ def login():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/movies", methods=["POST"])
+@app.route("/shows", methods=["POST"])
 def get_movies():
-    from app.db.crud import search_movies
+    from app.db.crud import search_shows
 
     try:
         input = ShowSearchInput.model_validate(request.get_json())
         filter = input.model_dump(exclude_none=True, exclude={"offset", "limit"})
         limit = input.limit
         offset = input.offset
-        movies = search_movies(
+        movies = search_shows(
             session=db.session, filters=filter, limit=limit, offset=offset
         )
         if not movies:

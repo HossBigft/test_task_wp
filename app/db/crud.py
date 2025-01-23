@@ -33,7 +33,7 @@ def create_user(*, session: scoped_session, username: str, password: str) -> Use
     return db_obj
 
 
-def search_movies(
+def search_shows(
     *, session: Session, filters: Dict[str, Any], limit: int = 10, offset: int = 0
 ):
     search_querys: Dict[str, Callable] = {
