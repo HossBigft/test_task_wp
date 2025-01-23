@@ -48,7 +48,6 @@ def get_movies():
     try:
         input = ShowSearchInput.model_validate(request.get_json())
         filter = input.model_dump(exclude_none=True, exclude={"offset", "limit"})
-        print(filter)
         limit = input.limit
         offset = input.offset
         movies = search_movies(

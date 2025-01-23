@@ -12,9 +12,12 @@ from enum import Enum
 from datetime import datetime
 
 
-class ShowTypes(Enum):
+class ShowTypes(str, Enum):
     MOVIE = "Movie"
     TVSHOW = "TV Show"
+
+    def __str__(self):
+        return self.value
 
 
 constr_str = Annotated[str | None, StringConstraints(min_length=3, max_length=50)]
@@ -38,16 +41,17 @@ class ShowSearchFilter(BaseModel):
     @model_validator(mode="before")
     def validate_at_least_one_field(cls, values):
         search_fields = [
+            "type",
             "title",
             "director",
             "rating",
             "cast",
             "country",
+            "date_added",
             "release_year",
             "duration",
             "listed_in",
             "description",
-            "date_added",
         ]
 
         if not any(values.get(field) for field in search_fields):
@@ -63,6 +67,18 @@ class ShowSearchFilter(BaseModel):
         if v is None:
             return None
         return [v] if not isinstance(v, list) else v
+
+    @field_validator("type", mode="before")
+    def validate_type_case_insensitive(cls, v):
+        if v is None:
+            return None
+
+        normalized = v.lower().replace(" ", "")
+        for member in ShowTypes:
+            if member.value.lower().replace(" ", "") == normalized:
+                return member
+
+        raise ValueError(f"Invalid show type: {v}")
 
 
 class ShowSearchInput(ShowSearchFilter):
