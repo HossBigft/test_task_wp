@@ -1,6 +1,6 @@
 import pandas as pd
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine,inspect
 from sqlalchemy.orm import sessionmaker
 
 
@@ -17,6 +17,10 @@ def split_column_data(df, column_name):
 
 
 def populate_db() -> None:
+    engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+    inspector = inspect(engine)
+    if "shows" in inspector.get_table_names():
+        return
     df = pd.read_csv("/app/data/netflix.csv")
     df["date_added"] = pd.to_datetime(df["date_added"], errors="coerce")
     df["release_year"] = pd.to_numeric(df["release_year"], errors="coerce")
@@ -26,7 +30,7 @@ def populate_db() -> None:
     df = split_column_data(df, "listed_in")
     df = split_column_data(df, "director")
 
-    engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+
 
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
