@@ -54,6 +54,8 @@ def get_movies():
         movies = search_movies(
             session=db.session, filters=filter, limit=limit, offset=offset
         )
+        if not movies:
+            return jsonify("No result"),404
         return jsonify(
             [
                 {
