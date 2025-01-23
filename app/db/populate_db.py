@@ -17,7 +17,7 @@ def split_column_data(df, column_name):
 
 
 def populate_db() -> None:
-    df = pd.read_csv("./data/netflix.csv")
+    df = pd.read_csv("/app/data/netflix.csv")
     df["date_added"] = pd.to_datetime(df["date_added"], errors="coerce")
     df["release_year"] = pd.to_numeric(df["release_year"], errors="coerce")
 
